@@ -16,12 +16,14 @@ public class Schedule {
     private String content;
     private String manager;
     private String password;
+    private String date;
 
     public Schedule(ScheduleRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
         this.manager = requestDto.getManager();
         this.password = requestDto.getPassword();
+        this.date = requestDto.getDate();
     }
 
 }

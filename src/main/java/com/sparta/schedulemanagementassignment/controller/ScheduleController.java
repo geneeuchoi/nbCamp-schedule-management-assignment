@@ -38,4 +38,16 @@ public class ScheduleController {
         return responseList;
     }
 
+    @GetMapping("/schedules/{id}")
+    public ScheduleResponseDto getSchedule(@PathVariable Long id) {
+        if(scheduleList.containsKey(id)) {
+            //해당 메모 가져오기
+            Schedule schedule = scheduleList.get(id);
+            ScheduleResponseDto scheduleResponseDto = new ScheduleResponseDto(schedule);
+            return scheduleResponseDto;
+        } else {
+            throw new IllegalArgumentException("선택한 스케쥴은 존재하지 않습니다.");
+        }
+    }
+
 }
