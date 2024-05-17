@@ -5,10 +5,7 @@ import com.sparta.schedulemanagementassignment.dto.ScheduleResponseDto;
 import com.sparta.schedulemanagementassignment.entity.Schedule;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/schedules")
@@ -54,13 +51,12 @@ public class ScheduleController {
     }
 
     //3단계 - 내림차순으로 일정 목록 조회
-    @GetMapping("")
+    @GetMapping("/read/ByOrder")
     public List<ScheduleResponseDto> getScheduleByReverseOrder() {
-        List<ScheduleResponseDto> responseList = scheduleList.values().stream()
-                .map(ScheduleResponseDto::new).toList();
-
-
-        return responseList;
+        List<ScheduleResponseDto> scheduleResponseDtoList = new ArrayList<>(scheduleList.values().stream()
+                .map(ScheduleResponseDto::new).toList());
+        Collections.sort(scheduleResponseDtoList, (schedule1, schedule2) -> schedule2.getDate().compareTo(schedule1.getDate()));
+        return scheduleResponseDtoList;
     }
 
     //4단계 - 선택한 일정 수정
@@ -74,11 +70,11 @@ public class ScheduleController {
                 return scheduleResponseDto;
             }
             else{
-                throw new IllegalArgumentException("비밀번호가 다릅니다.");
+                throw new IllegalArgumentException("틀린 비밀번호입니다.");
             }
         }
         else{
-            throw new IllegalArgumentException("존재하지 않는 일정입니다.");
+            throw new IllegalArgumentException("스케쥴이 존재하지 않습니다.");
         }
     }
 
@@ -91,11 +87,11 @@ public class ScheduleController {
                 scheduleList.remove(id);
             }
             else{
-                throw new IllegalArgumentException("비밀번호가 다릅니다.");
+                throw new IllegalArgumentException("틀린 비밀번호입니다.");
             }
         }
         else{
-            throw new IllegalArgumentException("존재하지 않는 일정입니다.");
+            throw new IllegalArgumentException("스케쥴이 존재하지 않습니다.");
         }
     }
 
