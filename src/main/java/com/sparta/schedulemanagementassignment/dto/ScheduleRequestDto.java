@@ -9,6 +9,6 @@ public class ScheduleRequestDto {
     private String title;
     private String content;
     private String manager;
-    private String password;
+    private Long password;
     private String date;
 }

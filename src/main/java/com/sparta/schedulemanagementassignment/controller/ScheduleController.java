@@ -11,12 +11,13 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/schedules")
 public class ScheduleController {
 
     private final Map<Long, Schedule> scheduleList = new HashMap<>();
 
-    @PostMapping("/schedules")
+    //1단계 - 일정 post
+    @PostMapping("/create")
     public ScheduleResponseDto createMemo(@RequestBody ScheduleRequestDto requestDto) {
         Schedule schedule = new Schedule(requestDto);
 
@@ -30,7 +31,8 @@ public class ScheduleController {
 
     }
 
-    @GetMapping("/schedules")
+    //1단계 - 일정 조회
+    @GetMapping("/read")
     public List<ScheduleResponseDto> getSchedule() {
         List<ScheduleResponseDto> responseList = scheduleList.values().stream()
                 .map(ScheduleResponseDto::new).toList();
@@ -38,8 +40,9 @@ public class ScheduleController {
         return responseList;
     }
 
-    @GetMapping("/schedules/{id}")
-    public ScheduleResponseDto getSchedule(@PathVariable Long id) {
+    //2단계 - 선택한 일정의 정보 조회
+    @GetMapping("/read/{id}")
+    public ScheduleResponseDto getScheduleById(@PathVariable Long id) {
         if(scheduleList.containsKey(id)) {
             //해당 메모 가져오기
             Schedule schedule = scheduleList.get(id);
@@ -49,5 +52,53 @@ public class ScheduleController {
             throw new IllegalArgumentException("선택한 스케쥴은 존재하지 않습니다.");
         }
     }
+
+    //3단계 - 내림차순으로 일정 목록 조회
+    @GetMapping("")
+    public List<ScheduleResponseDto> getScheduleByReverseOrder() {
+        List<ScheduleResponseDto> responseList = scheduleList.values().stream()
+                .map(ScheduleResponseDto::new).toList();
+
+
+        return responseList;
+    }
+
+    //4단계 - 선택한 일정 수정
+    @PutMapping("/update")
+    public ScheduleResponseDto updateSchedule(@RequestParam Long id, @RequestParam Long password, @RequestBody ScheduleRequestDto requestDto){
+        if(scheduleList.containsKey(id)){
+            Schedule schedule = scheduleList.get(id);
+            if(schedule.getPassword().equals(password)){
+                schedule.update(requestDto);
+                ScheduleResponseDto scheduleResponseDto = new ScheduleResponseDto(schedule);
+                return scheduleResponseDto;
+            }
+            else{
+                throw new IllegalArgumentException("비밀번호가 다릅니다.");
+            }
+        }
+        else{
+            throw new IllegalArgumentException("존재하지 않는 일정입니다.");
+        }
+    }
+
+    //5단계 - 선택한 일정 삭제
+    @DeleteMapping("/delete")
+    public void deleteMemo (@RequestParam Long id, @RequestParam Long password) {
+        if(scheduleList.containsKey(id)){
+            Schedule schedule = scheduleList.get(id);
+            if(schedule.getPassword().equals(password)){
+                scheduleList.remove(id);
+            }
+            else{
+                throw new IllegalArgumentException("비밀번호가 다릅니다.");
+            }
+        }
+        else{
+            throw new IllegalArgumentException("존재하지 않는 일정입니다.");
+        }
+    }
+
+
 
 }

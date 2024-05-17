@@ -15,7 +15,7 @@ public class Schedule {
     private String title;
     private String content;
     private String manager;
-    private String password;
+    private Long password;
     private String date;
 
     public Schedule(ScheduleRequestDto requestDto) {
@@ -26,4 +26,9 @@ public class Schedule {
         this.date = requestDto.getDate();
     }
 
+    public void update(ScheduleRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
+        this.manager = requestDto.getManager();
+    }
 }
